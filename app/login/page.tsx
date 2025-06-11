@@ -1,11 +1,40 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { loginUser } from "./auth"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [role, setRole] = useState("")
+  const [error, setError] = useState("")
+  const router = useRouter()
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError("")
+
+    if (!email || !password || !role) {
+      setError("Please fill in all fields.")
+      return
+    }
+
+    try {
+      const data = await loginUser({ email, password, role })
+      console.log("Login success:", data)
+      // TODO: redirect, save token, ...
+      router.push('../browse')
+    } catch (err: any) {
+      setError(err.message || "Login failed")
+    }
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
@@ -14,17 +43,20 @@ export default function LoginPage() {
           <CardDescription>Enter your credentials to access your account</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+        <form onSubmit={handleSubmit}>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="Enter your email" required />
+            <Input id="email" type="email" placeholder="Enter your email" required value={email}
+                onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder="Enter your password" required />
+            <Input id="password" type="password" placeholder="Enter your password" required value={password}
+                onChange={(e) => setPassword(e.target.value)}/>
           </div>
           <div className="space-y-2">
             <Label htmlFor="role">Role</Label>
-            <Select>
+            <Select onValueChange={(value) => setRole(value)} value={role}>
               <SelectTrigger>
                 <SelectValue placeholder="Select your role" />
               </SelectTrigger>
@@ -35,9 +67,11 @@ export default function LoginPage() {
               </SelectContent>
             </Select>
           </div>
-          <Button className="w-full" size="lg">
+          {error && <p className="text-red-600 mt-2">{error}</p>}
+          <Button type="submit" className="w-full" size="lg">
             Login
           </Button>
+          </form>
           <div className="text-center text-sm">
             <span className="text-muted-foreground">{"Don't have an account? "}</span>
             <Link href="/signup" className="text-primary hover:underline">
