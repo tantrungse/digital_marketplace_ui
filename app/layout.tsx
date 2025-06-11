@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Digital Marketplace - Your Trusted Online Shopping Destination",
   description:
     "Discover amazing products from verified sellers. Shop electronics, clothing, home goods and more with confidence.",
+    generator: 'v0.dev'
 }
 
 export default function RootLayout({
