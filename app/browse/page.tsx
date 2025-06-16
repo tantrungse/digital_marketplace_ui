@@ -1,3 +1,5 @@
+"use client"
+
 import { Search, Filter, Star, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
@@ -7,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
+import { MultiSelect } from "@/components/multi-select";
+import { Cat, Dog, Fish, Rabbit, Turtle } from "lucide-react";
+import { useState } from "react"
 
 export default function BrowsePage() {
   const products = [
@@ -65,6 +70,16 @@ export default function BrowsePage() {
       category: "Electronics",
     },
   ]
+
+  const frameworksList = [
+    { value: "react", label: "React", icon: Turtle },
+    { value: "angular", label: "Angular", icon: Cat },
+    { value: "vue", label: "Vue", icon: Dog },
+    { value: "svelte", label: "Svelte", icon: Rabbit },
+    { value: "ember", label: "Ember", icon: Fish },
+  ];
+
+  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>(["react", "angular"]);
 
   return (
     <div className="container mx-auto p-6">
@@ -125,6 +140,17 @@ export default function BrowsePage() {
                 <SelectItem value="2">2+ Stars</SelectItem>
               </SelectContent>
             </Select>
+            <div className="p-4 max-w-xl">
+      <MultiSelect
+        options={frameworksList}
+        onValueChange={setSelectedFrameworks}
+        defaultValue={selectedFrameworks}
+        placeholder="Select tags"
+        variant="inverted"
+        animation={2}
+        maxCount={3}
+      />
+    </div>
           </div>
         </div>
       </div>

@@ -8,9 +8,12 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { loginUser } from "@/apis/auth/authService"
+import { useUser } from "@/context/UserContext"
 
 export default function LoginPage() {
   const router = useRouter()
+  const { setUser } = useUser()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [role, setRole] = useState("")
@@ -20,24 +23,23 @@ export default function LoginPage() {
     e.preventDefault()
     setError("")
 
+    if (!role) {
+      setError("Please select a role")
+      return
+    }
+    console.log(localStorage)
+
     try {
-      const res = await fetch("http://localhost:3001/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ user: { email, password, role } }),
-      })
+      const { token, res } = await loginUser({ user: { email, password, role } })
+      console.log(res)
 
-      const data = await res.json()
+      const user= res.data
 
-      if (!res.ok) {
-        throw new Error(data?.status?.message || "Login failed")
-      }
-
-      // ✅ Redirect to /browse on success
+      localStorage.setItem("token", token || "")
+      localStorage.setItem("user", JSON.stringify(user))
       router.push("/browse")
     } catch (err: any) {
-      setError(err.message || "Login failed")
+      setError("Invalid email or password")
     }
   }
   return (
@@ -68,7 +70,6 @@ export default function LoginPage() {
               <SelectContent>
                 <SelectItem value="buyer">Buyer</SelectItem>
                 <SelectItem value="seller">Seller</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
               </SelectContent>
             </Select>
           </div>

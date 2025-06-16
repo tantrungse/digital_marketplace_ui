@@ -14,10 +14,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { logoutUser } from "@/apis/auth/authService"
+import { useRouter } from "next/navigation"
+import { useUser } from "@/context/UserContext"
 
 export function Header() {
+  const router = useRouter()
   const [cartCount] = useState(3)
   const [notificationCount] = useState(2)
+  const [error, setError] = useState("")
+  const { user } = useUser()
 
   const navigation = [
     { name: "Browse", href: "/browse" },
@@ -25,6 +31,17 @@ export function Header() {
     { name: "Deals", href: "/deals" },
     { name: "About", href: "/about" },
   ]
+
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault()
+
+    try {
+      await logoutUser()
+      router.push("/login")
+    } catch (err: any) {
+      setError(err.message || "Logout failed")
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -124,7 +141,7 @@ export function Header() {
                   <Link href="/settings">Settings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Link href="/login">Sign Out</Link>
+                  <Link href="#" onClick={handleLogout} >Sign Out</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
