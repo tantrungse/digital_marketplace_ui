@@ -7,7 +7,7 @@ interface LoginParams {
   }
   
   export async function loginUser(params: LoginParams) {
-    const response = await fetch("http://localhost:3001/login", {
+    const response = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -38,7 +38,7 @@ interface LoginParams {
   
 
   export async function signupUser(params: signupParams) {
-    const response = await fetch("http://localhost:3001/signup", {
+    const response = await fetch("http://localhost:3000/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -59,7 +59,7 @@ interface LoginParams {
   
   export async function logoutUser() {
     const token = localStorage.getItem("token")
-    const response = await fetch("http://localhost:3001/logout", {
+    const response = await fetch("http://localhost:3000/logout", {
       method: "DELETE",
       headers: {
         "Authorization": `${token}`,

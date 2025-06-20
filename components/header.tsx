@@ -141,7 +141,7 @@ export function Header() {
                   <Link href="/settings">Settings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Link href="#" onClick={handleLogout} >Sign Out</Link>
+                  <Link href="http://localhost:3000/logout" onClick={handleLogout} >Sign Out</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

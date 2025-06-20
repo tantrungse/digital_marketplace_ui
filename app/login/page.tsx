@@ -33,7 +33,7 @@ export default function LoginPage() {
       const { token, res } = await loginUser({ user: { email, password, role } })
       console.log(res)
 
-      const user= res.data
+      const user= res.status.data.user
 
       localStorage.setItem("token", token || "")
       localStorage.setItem("user", JSON.stringify(user))

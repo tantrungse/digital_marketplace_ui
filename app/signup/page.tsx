@@ -36,7 +36,7 @@ export default function SignUpPage() {
       const { token, res } = await signupUser({ user: { first_name: firstName, last_name: lastName, email, password, role } })
       console.log(res)
 
-      const user= res.data
+      const user= res.data.attributes
 
       localStorage.setItem("token", token || "")
       localStorage.setItem("user", JSON.stringify(user))
