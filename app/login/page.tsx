@@ -31,13 +31,23 @@ export default function LoginPage() {
 
     try {
       const { token, res } = await loginUser({ user: { email, password, role } })
-      console.log(res)
 
-      const user= res.status.data.user
+      const user = res.status.data.user.attributes
+      const role_id = res.status.data.user.relationships.roles.data[0].id
 
       localStorage.setItem("token", token || "")
       localStorage.setItem("user", JSON.stringify(user))
-      router.push("/browse")
+
+      // Temporary process by front-end
+      if (role === "buyer") {
+        router.push("/browse")
+      } else if (role === "seller") {
+        router.push("/seller/dashboard")
+      } else if (role === "admin") {
+        router.push("/admin/dashboard")
+      } else {
+        router.push("/")
+      }
     } catch (err: any) {
       setError("Invalid email or password")
     }
@@ -70,6 +80,7 @@ export default function LoginPage() {
               <SelectContent>
                 <SelectItem value="buyer">Buyer</SelectItem>
                 <SelectItem value="seller">Seller</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
               </SelectContent>
             </Select>
           </div>
