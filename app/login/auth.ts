@@ -11,7 +11,7 @@ interface LoginParams {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ user: params }),
-      credentials: "include",
+      // credentials: "include",
     })
   
     if (!response.ok) {

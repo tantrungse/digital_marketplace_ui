@@ -11,9 +11,54 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { MultiSelect } from "@/components/multi-select";
 import { Cat, Dog, Fish, Rabbit, Turtle } from "lucide-react";
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function BrowsePage() {
+  const router = useRouter()
+  const [authorized, setAuthorized] = useState(false)
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    const checkAuthorization = async () => {
+      try {
+        const token = localStorage.getItem("token")
+        console.log(token)
+
+        const response = await fetch("http://localhost:3000/api/v1/buyer/products/browse", {
+          method: "GET",
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+            "Content-Type": "application/json",
+          },
+        })
+
+        if (!response.ok) {
+          if (response.status === 403) {
+            router.push("/403")
+          } else {
+            setError("Something went wrong")
+          }
+          return
+        }
+
+        setAuthorized(true)
+      } catch (err) {
+        setError("Network error")
+      }
+    }
+
+    checkAuthorization()
+  }, [])
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>
+  }
+
+  if (!authorized) {
+    return <div>Checking authorization...</div>
+  }
+
   const products = [
     {
       id: 1,

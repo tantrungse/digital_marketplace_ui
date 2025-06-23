@@ -13,14 +13,16 @@ interface LoginParams {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(params),
-      credentials: "include",
+      // credentials: "include",
     })
   
     const token = response.headers.get("Authorization")
     const res = await response.json()
   
     if (!response.ok) {
-      throw new Error(res?.status?.message || "Login failed")
+      const error = new Error(res?.status?.message || "Login failed") as any;
+      error.status = response.status
+      throw error
     }
   
     return { token, res }
@@ -44,7 +46,7 @@ interface LoginParams {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(params),
-      credentials: "include",
+      // credentials: "include",
     })
   
     const token = response.headers.get("Authorization")
@@ -65,7 +67,7 @@ interface LoginParams {
         "Authorization": `${token}`,
         "Content-Type": "application/json",
       },
-      credentials: "include"
+      // credentials: "include"
     })
   
     const data = await response.json()

@@ -33,23 +33,27 @@ export default function LoginPage() {
       const { token, res } = await loginUser({ user: { email, password, role } })
 
       const user = res.status.data.user.attributes
-      const role_id = res.status.data.user.relationships.roles.data[0].id
+      const roles = user.roles
 
       localStorage.setItem("token", token || "")
       localStorage.setItem("user", JSON.stringify(user))
+      localStorage.setItem("roles", JSON.stringify(roles));
 
-      // Temporary process by front-end
-      if (role === "buyer") {
-        router.push("/browse")
-      } else if (role === "seller") {
-        router.push("/seller/dashboard")
-      } else if (role === "admin") {
-        router.push("/admin/dashboard")
+      if (roles.includes("buyer")) {
+        router.push("/browse");
+      } else if (roles.includes("seller")) {
+        router.push("/seller/dashboard");
+      } else if (roles.includes("admin")) {
+        router.push("/admin/dashboard");
       } else {
-        router.push("/")
+        router.push("/");
       }
     } catch (err: any) {
-      setError("Invalid email or password")
+      if (err.status === 403) {
+        router.push("/403");
+      } else {
+        setError(err.message || "Invalid email or password");
+      }
     }
   }
   return (
